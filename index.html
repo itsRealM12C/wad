@@ -122,39 +122,39 @@
           onFailure: function(err){ console.log("Failed", err); }
         });
       } else if(action === "browser") {
-        webOS.service.request("luna://com.webos.applicationManager", {
+        var request = webOS.service.request("luna://com.webos.applicationManager", {
           method:"launch", parameters:{id:"com.webos.app.browser"}
         });
       } else if(action === "cheeringtv") {
-        webOS.service.request("luna://com.webos.applicationManager", {
+        var request = webOS.service.request("luna://com.webos.applicationManager", {
           method:"launch", parameters:{id:"com.webos.app.cheeringtv"}
         });
       } else if(action === "settings") {
-        webOS.service.request("luna://com.webos.applicationManager", {
+        var request = webOS.service.request("luna://com.webos.applicationManager", {
           method:"launch", parameters:{id:"com.palm.app.settings"}
         });
       } else if(action === "secret") {
-        webOS.service.request("luna://com.webos.applicationManager", {
+        var request = webOS.service.request("luna://com.webos.applicationManager", {
           method:"launch", parameters:{id:"com.webos.app.installation"}
         });
       } else if(action === "premium") {
-        webOS.service.request("luna://com.webos.applicationManager", {
+        var request = webOS.service.request("luna://com.webos.applicationManager", {
           method:"launch", parameters:{id:"com.webos.app.premium"}
         });
       } else if(action === "home") {
-        webOS.service.request("luna://com.webos.applicationManager", {
+        var request = webOS.service.request("luna://com.webos.applicationManager", {
           method:"launch", parameters:{id:"com.webos.app.home"}
         });
       } else if(action === "fullhome") {
-        webOS.service.request("luna://com.webos.applicationManager", {
+        var request = webOS.service.request("luna://com.webos.applicationManager", {
           method:"launch", parameters:{id:"com.webos.app.fullhome"}
         });
       } else if(action === "music") {
-        webOS.service.request("luna://com.webos.applicationManager", {
+        var request = webOS.service.request("luna://com.webos.applicationManager", {
           method:"launch", parameters:{id:"com.webos.app.music"}
         });
       } else if(action === "discovery") {
-        webOS.service.request("luna://com.webos.applicationManager", {
+        var request = webOS.service.request("luna://com.webos.applicationManager", {
           method:"launch", parameters:{id:"com.webos.app.discovery"}
         });
       }

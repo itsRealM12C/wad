@@ -1,0 +1,175 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>TV Style UI</title>
+  <style>
+    body { background:#0b0b0b; margin:0; font-family:sans-serif; color:#fff; }
+    .grid {
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:20px;
+      padding:40px;
+    }
+    .tile {
+      background:#1a1a1a;
+      border:3px solid transparent;
+      border-radius:12px;
+      text-align:center;
+      padding:12px;
+      transition:all 0.2s;
+    }
+    .tile img {
+      width:100px;
+      height:100px;
+      object-fit:contain;
+      margin-bottom:10px;
+    }
+    .tile span {
+      display:block;
+      font-size:14px;
+      color:#ddd;
+    }
+    .tile.active {
+      border-color:#4af;
+      background:#222;
+    }
+  </style>
+</head>
+<body>
+  <div class="grid" id="grid">
+    <div class="tile active" data-action="photovideo">
+      <img src="https://img.icons8.com/fluency/96/video.png" alt="">
+      <span>Open Photo & Video</span>
+    </div>
+    <div class="tile" data-action="browser">
+      <img src="https://img.icons8.com/fluency/96/internet.png" alt="">
+      <span>Web Browser</span>
+    </div>
+    <div class="tile" data-action="cheeringtv">
+      <img src="https://img.icons8.com/fluency/96/party.png" alt="">
+      <span>Cheering TV</span>
+    </div>
+    <div class="tile" data-action="settings">
+      <img src="https://img.icons8.com/fluency/96/settings.png" alt="">
+      <span>Settings</span>
+    </div>
+    <div class="tile" data-action="secret">
+      <img src="https://img.icons8.com/fluency/96/lock.png" alt="">
+      <span>Secret Menu</span>
+    </div>
+    <div class="tile" data-action="premium">
+      <img src="https://img.icons8.com/fluency/96/shop.png" alt="">
+      <span>Premium Store</span>
+    </div>
+    <div class="tile" data-action="home">
+      <img src="https://img.icons8.com/fluency/96/home.png" alt="">
+      <span>Home</span>
+    </div>
+    <div class="tile" data-action="fullhome">
+      <img src="https://img.icons8.com/fluency/96/dashboard.png" alt="">
+      <span>New Home</span>
+    </div>
+    <div class="tile" data-action="music">
+      <img src="https://img.icons8.com/fluency/96/musical-notes.png" alt="">
+      <span>Music App</span>
+    </div>
+    <div class="tile" data-action="discovery">
+      <img src="https://img.icons8.com/fluency/96/tv.png" alt="">
+      <span>Content Store</span>
+    </div>
+  </div>
+
+  <script>
+    const tiles = [...document.querySelectorAll('.tile')];
+    let index = 0;
+
+    function updateFocus() {
+      tiles.forEach((t,i)=>t.classList.toggle('active', i===index));
+    }
+
+    function runAction(action) {
+      if(action === "photovideo") {
+        var request = webOS.service.request("luna://com.webos.applicationManager", {
+          method: "launch",
+          parameters: {
+            id: "com.webos.app.photovideo",
+            params: {
+              payload: [
+                {
+                  fullPath: "https://media.w3.org/2010/05/sintel/trailer.mp4",
+                  artist: "",
+                  subtitle: "",
+                  dlnaInfo: {
+                    flagVal: 4096,
+                    cleartextSize: "-1",
+                    contentLength: "-1",
+                    opVal: 1,
+                    protocolInfo: "http-get:*:video/x-matroska:DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000",
+                    duration: 0
+                  },
+                  mediaType: "VIDEO",
+                  thumbnail: "",
+                  deviceType: "DMR",
+                  album: "",
+                  fileName: "trailer",
+                  lastPlayPosition: -1
+                }
+              ]
+            }
+          },
+          onSuccess: function(res){ console.log("Launched PhotoVideo", res); },
+          onFailure: function(err){ console.log("Failed", err); }
+        });
+      } else if(action === "browser") {
+        webOS.service.request("luna://com.webos.applicationManager", {
+          method:"launch", parameters:{id:"com.webos.app.browser"}
+        });
+      } else if(action === "cheeringtv") {
+        webOS.service.request("luna://com.webos.applicationManager", {
+          method:"launch", parameters:{id:"com.webos.app.cheeringtv"}
+        });
+      } else if(action === "settings") {
+        webOS.service.request("luna://com.webos.applicationManager", {
+          method:"launch", parameters:{id:"com.palm.app.settings"}
+        });
+      } else if(action === "secret") {
+        webOS.service.request("luna://com.webos.applicationManager", {
+          method:"launch", parameters:{id:"com.webos.app.installation"}
+        });
+      } else if(action === "premium") {
+        webOS.service.request("luna://com.webos.applicationManager", {
+          method:"launch", parameters:{id:"com.webos.app.premium"}
+        });
+      } else if(action === "home") {
+        webOS.service.request("luna://com.webos.applicationManager", {
+          method:"launch", parameters:{id:"com.webos.app.home"}
+        });
+      } else if(action === "fullhome") {
+        webOS.service.request("luna://com.webos.applicationManager", {
+          method:"launch", parameters:{id:"com.webos.app.fullhome"}
+        });
+      } else if(action === "music") {
+        webOS.service.request("luna://com.webos.applicationManager", {
+          method:"launch", parameters:{id:"com.webos.app.music"}
+        });
+      } else if(action === "discovery") {
+        webOS.service.request("luna://com.webos.applicationManager", {
+          method:"launch", parameters:{id:"com.webos.app.discovery"}
+        });
+      }
+    }
+
+    window.addEventListener('keydown', (ev)=>{
+      if(ev.key === "ArrowRight") { index = (index+1)%tiles.length; updateFocus(); }
+      else if(ev.key === "ArrowLeft") { index = (index-1+tiles.length)%tiles.length; updateFocus(); }
+      else if(ev.key === "ArrowUp") { index = (index-5+tiles.length)%tiles.length; updateFocus(); }
+      else if(ev.key === "ArrowDown") { index = (index+5)%tiles.length; updateFocus(); }
+      else if(ev.key === "Enter") {
+        const action = tiles[index].dataset.action;
+        runAction(action);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -10,7 +10,7 @@
       font-family:sans-serif; 
       color:#fff; 
       text-align:center;
-      overflow-y: auto; /* enable scrolling */
+      overflow-y: auto; 
       height: 100vh;
     }
     h2 { margin:20px 0; }
@@ -83,20 +83,29 @@
     const tiles = [...document.querySelectorAll('.tile')];
     let index = 0;
     let client;
+    let useLegacyRequest = false;
 
     function log(m){
       LOG.textContent = `[${new Date().toLocaleTimeString()}] ${m}\n` + LOG.textContent;
     }
 
-    // decorate each tile with icon + title
-    tiles.forEach(tile=>{
+    // detect Chrome version
+    const ua = navigator.userAgent;
+    const match = ua.match(/Chrome\/(\d+)/);
+    const chromeVersion = match ? parseInt(match[1], 10) : 0;
+    useLegacyRequest = chromeVersion <= 53; // <=53 use legacy
+
+    log("Detected Chrome version: " + chromeVersion + " -> using " + (useLegacyRequest?"legacy request":"SSAPClient"));
+
+    // decorate each tile with icon + title and onclick
+    tiles.forEach((tile, i)=>{
       tile.innerHTML = `<img src="${tile.dataset.thumb}"><span>${tile.dataset.title}</span>`;
-      // add onclick directly
-      tile.onclick = ()=>{ updateFocus(tiles.indexOf(tile)); launchApp(tile); };
+      tile.onclick = () => { updateFocus(i); launchApp(tile); };
     });
 
     async function initClient(){
       if(client) return client;
+      if(useLegacyRequest) return null; // no client needed for legacy
       const target = "127.0.0.1";
       client = new SSAPClient(target, window.localStorage["client-key-"+target]);
       log("Connecting...");
@@ -108,17 +117,33 @@
     }
 
     async function launchApp(tile){
-      try{
-        const cli = await initClient();
-        log("Launching " + tile.dataset.id);
-        await cli.request({
-          uri: "ssap://system.launcher/launch",
-          payload: { id: tile.dataset.id }
-        });
-        log("Launch sent: " + tile.dataset.id);
-      }catch(e){
-        console.error(e);
-        log("Launch failed: " + e);
+      if(useLegacyRequest){
+        // legacy var request
+        try{
+          log("Launching (legacy) " + tile.dataset.id);
+          var request = webOS.service.request("luna://com.webos.service.applicationManager", {
+            method: "launch",
+            parameters: { id: tile.dataset.id },
+            onSuccess: function(msg){ log("Launch success: "+JSON.stringify(msg)); },
+            onFailure: function(err){ log("Launch failed: "+JSON.stringify(err)); }
+          });
+        }catch(e){
+          log("Legacy launch error: "+e);
+        }
+      } else {
+        // modern SSAPClient
+        try{
+          const cli = await initClient();
+          log("Launching " + tile.dataset.id);
+          await cli.request({
+            uri: "ssap://system.launcher/launch",
+            payload: { id: tile.dataset.id }
+          });
+          log("Launch sent: " + tile.dataset.id);
+        }catch(e){
+          console.error(e);
+          log("Launch failed: " + e);
+        }
       }
     }
 
@@ -126,7 +151,6 @@
       tiles[index].classList.remove("active");
       index = (newIndex + tiles.length) % tiles.length;
       tiles[index].classList.add("active");
-      // scroll into view
       tiles[index].scrollIntoView({behavior:"smooth", block:"center"});
     }
 
@@ -140,8 +164,10 @@
     });
 
     (async()=>{
-      try{ await initClient(); }
-      catch(e){ log("Init failed: "+e); }
+      if(!useLegacyRequest){
+        try{ await initClient(); }
+        catch(e){ log("Init failed: "+e); }
+      }
     })();
   </script>
 </body>

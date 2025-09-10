@@ -4,18 +4,56 @@
   <meta charset="utf-8" />
   <title>SSAP TV Launcher</title>
   <style>
-    body { background:#0b0b0b; margin:0; font-family:sans-serif; color:#fff; text-align:center }
+    body { 
+      background:#0b0b0b; 
+      margin:0; 
+      font-family:sans-serif; 
+      color:#fff; 
+      text-align:center;
+      overflow-y: auto; /* enable scrolling */
+      height: 100vh;
+    }
     h2 { margin:20px 0; }
-    .grid { display:grid; grid-template-columns:repeat(5,1fr); gap:20px; padding:40px; }
+    .grid { 
+      display:grid; 
+      grid-template-columns:repeat(5,1fr); 
+      gap:20px; 
+      padding:40px; 
+    }
     .tile {
-      background:#1a1a1a; border:3px solid transparent; border-radius:12px;
-      text-align:center; padding:12px; transition:border-color 0.2s, background 0.2s;
+      background:#1a1a1a; 
+      border:3px solid transparent; 
+      border-radius:12px;
+      text-align:center; 
+      padding:12px; 
+      transition:border-color 0.2s, background 0.2s;
       cursor:pointer;
     }
-    .tile img { width:96px; height:96px; object-fit:contain; margin-bottom:10px; }
-    .tile span { display:block; font-size:14px; color:#ddd; }
-    .tile.active { border-color:#4af; background:#222; }
-    #log { white-space:pre; text-align:left; background:#111; padding:10px; margin:20px auto; max-width:900px; border-radius:8px; font-size:13px; }
+    .tile img { 
+      width:96px; 
+      height:96px; 
+      object-fit:contain; 
+      margin-bottom:10px; 
+    }
+    .tile span { 
+      display:block; 
+      font-size:14px; 
+      color:#ddd; 
+    }
+    .tile.active { 
+      border-color:#4af; 
+      background:#222; 
+    }
+    #log { 
+      white-space:pre; 
+      text-align:left; 
+      background:#111; 
+      padding:10px; 
+      margin:20px auto; 
+      max-width:900px; 
+      border-radius:8px; 
+      font-size:13px; 
+    }
   </style>
 </head>
 <body>
@@ -46,11 +84,15 @@
     let index = 0;
     let client;
 
-    function log(m){ LOG.textContent = `[${new Date().toLocaleTimeString()}] ${m}\n` + LOG.textContent; }
+    function log(m){
+      LOG.textContent = `[${new Date().toLocaleTimeString()}] ${m}\n` + LOG.textContent;
+    }
 
     // decorate each tile with icon + title
     tiles.forEach(tile=>{
       tile.innerHTML = `<img src="${tile.dataset.thumb}"><span>${tile.dataset.title}</span>`;
+      // add onclick directly
+      tile.onclick = ()=>{ updateFocus(tiles.indexOf(tile)); launchApp(tile); };
     });
 
     async function initClient(){
@@ -84,6 +126,8 @@
       tiles[index].classList.remove("active");
       index = (newIndex + tiles.length) % tiles.length;
       tiles[index].classList.add("active");
+      // scroll into view
+      tiles[index].scrollIntoView({behavior:"smooth", block:"center"});
     }
 
     // keyboard nav
@@ -95,12 +139,10 @@
       else if(ev.key==="Enter") launchApp(tiles[index]);
     });
 
-    // mouse
-    tiles.forEach((tile,i)=>{
-      tile.addEventListener("click",()=>{ updateFocus(i); launchApp(tile); });
-    });
-
-    (async()=>{ try{ await initClient(); }catch(e){ log("Init failed: "+e); } })();
+    (async()=>{
+      try{ await initClient(); }
+      catch(e){ log("Init failed: "+e); }
+    })();
   </script>
 </body>
 </html>

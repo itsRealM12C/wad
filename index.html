@@ -2,120 +2,105 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>TV UI</title>
+  <title>SSAP TV Launcher</title>
   <style>
-    body { background:#0b0b0b; margin:0; font-family:sans-serif; color:#fff; text-align:center; }
+    body { background:#0b0b0b; margin:0; font-family:sans-serif; color:#fff; text-align:center }
     h2 { margin:20px 0; }
     .grid { display:grid; grid-template-columns:repeat(5,1fr); gap:20px; padding:40px; }
     .tile {
       background:#1a1a1a; border:3px solid transparent; border-radius:12px;
       text-align:center; padding:12px; transition:border-color 0.2s, background 0.2s;
+      cursor:pointer;
     }
-    .tile img { width:100px; height:100px; object-fit:contain; margin-bottom:10px; }
+    .tile img { width:96px; height:96px; object-fit:contain; margin-bottom:10px; }
     .tile span { display:block; font-size:14px; color:#ddd; }
     .tile.active { border-color:#4af; background:#222; }
-    .yt-button {
-      display:inline-block;
-      margin:20px auto;
-      padding:14px 28px;
-      font-size:18px;
-      background:#c4302b;
-      color:#fff;
-      border:none;
-      border-radius:10px;
-      cursor:pointer;
-      box-shadow:0 4px 8px rgba(0,0,0,0.6);
-    }
-    .yt-button:hover { background:#e9453f; }
+    #log { white-space:pre; text-align:left; background:#111; padding:10px; margin:20px auto; max-width:900px; border-radius:8px; font-size:13px; }
   </style>
 </head>
 <body>
-  <h2>📺 TV App Launcher</h2>
+  <h2>📺 LG webOS SSAP Launcher</h2>
 
   <div class="grid" id="grid">
-    <div class="tile active" data-id="com.webos.app.photovideo">
-      <img src="https://img.icons8.com/fluency/96/video.png" alt="">
-      <span>Open Photo & Video</span>
-    </div>
-    <div class="tile" data-id="com.webos.app.browser">
-      <img src="https://img.icons8.com/fluency/96/internet.png" alt="">
-      <span>Web Browser</span>
-    </div>
-    <div class="tile" data-id="com.webos.app.music">
-      <img src="https://img.icons8.com/fluency/96/musical-notes.png" alt="">
-      <span>Music</span>
-    </div>
+    <div class="tile active" data-id="com.webos.app.photovideo" data-title="Photo & Video" data-thumb="https://img.icons8.com/fluency/96/video.png"></div>
+    <div class="tile" data-id="com.webos.app.browser" data-title="Web Browser" data-thumb="https://img.icons8.com/fluency/96/internet.png"></div>
+    <div class="tile" data-id="youtube.leanback.v4" data-title="YouTube Leanback" data-thumb="https://img.icons8.com/fluency/96/youtube-play.png"></div>
+    <div class="tile" data-id="com.webos.app.installation" data-title="Secret Menu" data-thumb="https://img.icons8.com/fluency/96/settings.png"></div>
+    <div class="tile" data-id="com.webos.app.music" data-title="Music" data-thumb="https://img.icons8.com/fluency/96/musical-notes.png"></div>
+    <div class="tile" data-id="com.palm.app.settings" data-title="Settings" data-thumb="https://img.icons8.com/fluency/96/settings--v1.png"></div>
+    <div class="tile" data-id="com.webos.app.cheeringtv" data-title="Cheering TV" data-thumb="https://img.icons8.com/fluency/96/speaker.png"></div>
+    <div class="tile" data-id="com.webos.app.discovery" data-title="LG Content Store" data-thumb="https://img.icons8.com/fluency/96/shopping-bag.png"></div>
+    <div class="tile" data-id="com.webos.app.home" data-title="Home" data-thumb="https://img.icons8.com/fluency/96/home.png"></div>
+    <div class="tile" data-id="com.webos.app.fullhome" data-title="New Home" data-thumb="https://img.icons8.com/fluency/96/home-page.png"></div>
   </div>
 
-  <!-- Extra button for YouTube -->
-  <button class="yt-button" onclick="launchYouTube()">▶ Launch YouTube Leanback</button>
+  <div id="log"></div>
 
-  <!-- Correct runtime scripts for webOS -->
-  <script src="file:///usr/palm/frameworks/enyo/2.0/enyo.js"></script>
-  <script src="file:///usr/palm/frameworks/enyo/2.0/lib/webos/webos.js"></script>
+  <!-- Required SSAP libs -->
+  <script src="https://dropbox.inf.re/webos-gfn/wsproxy.js"></script>
+  <script src="https://dropbox.inf.re/webos-gfn/client.js"></script>
 
   <script>
+    const LOG = document.getElementById('log');
     const tiles = [...document.querySelectorAll('.tile')];
     let index = 0;
+    let client;
 
-    function updateFocus(newIndex) {
-      if (newIndex === index) return;
-      tiles[index].classList.remove('active');
-      index = (newIndex + tiles.length) % tiles.length;
-      tiles[index].classList.add('active');
+    function log(m){ LOG.textContent = `[${new Date().toLocaleTimeString()}] ${m}\n` + LOG.textContent; }
+
+    // decorate each tile with icon + title
+    tiles.forEach(tile=>{
+      tile.innerHTML = `<img src="${tile.dataset.thumb}"><span>${tile.dataset.title}</span>`;
+    });
+
+    async function initClient(){
+      if(client) return client;
+      const target = "127.0.0.1";
+      client = new SSAPClient(target, window.localStorage["client-key-"+target]);
+      log("Connecting...");
+      await client.connect();
+      log("Registering...");
+      window.localStorage["client-key-"+target] = await client.register();
+      log("Registered.");
+      return client;
     }
 
-    function runAction(tile) {
-      const appId = tile.dataset.id;
-      if (!appId) return;
-
-      if (appId === "com.webos.app.photovideo") {
-        webOS.service.request("luna://com.webos.applicationManager", {
-          method: "launch",
-          parameters: {
-            id: "com.webos.app.photovideo",
-            params: { payload:[{ fullPath:"https://media.w3.org/2010/05/sintel/trailer.mp4", mediaType:"VIDEO", fileName:"trailer" }] }
-          },
-          onSuccess: ()=>console.log("Launched PhotoVideo"),
-          onFailure: (e)=>console.log("Error", e)
+    async function launchApp(tile){
+      try{
+        const cli = await initClient();
+        log("Launching " + tile.dataset.id);
+        await cli.request({
+          uri: "ssap://system.launcher/launch",
+          payload: { id: tile.dataset.id }
         });
-      } else {
-        webOS.service.request("luna://com.webos.applicationManager", {
-          method: "launch",
-          parameters: { id: appId },
-          onSuccess: ()=>console.log("Launched", appId),
-          onFailure: (e)=>console.log("Error", e)
-        });
+        log("Launch sent: " + tile.dataset.id);
+      }catch(e){
+        console.error(e);
+        log("Launch failed: " + e);
       }
     }
 
-    // Keyboard navigation
-    window.addEventListener('keydown', (ev)=>{
-      if(ev.key === "ArrowRight") updateFocus(index+1);
-      else if(ev.key === "ArrowLeft") updateFocus(index-1);
-      else if(ev.key === "Enter") runAction(tiles[index]);
-    });
-
-    // Mouse click
-    tiles.forEach((tile,i)=>{
-      tile.addEventListener('click', ()=>{ updateFocus(i); runAction(tile); });
-    });
-
-    // Extra: Launch YouTube Leanback
-    function launchYouTube() {
-      var request = webOS.service.request("luna://com.webos.applicationManager", {
-        method: "launch",
-        parameters: { id: "youtube.leanback.v4" },
-        onSuccess: function (inResponse) {
-          console.log("YouTube launched");
-          window.close();
-        },
-        onFailure: function (inError) {
-          console.log("Failed to launch YouTube");
-          console.log("[" + inError.errorCode + "]: " + inError.errorText);
-        }
-      });
+    function updateFocus(newIndex){
+      tiles[index].classList.remove("active");
+      index = (newIndex + tiles.length) % tiles.length;
+      tiles[index].classList.add("active");
     }
+
+    // keyboard nav
+    window.addEventListener("keydown",ev=>{
+      if(ev.key==="ArrowRight") updateFocus(index+1);
+      else if(ev.key==="ArrowLeft") updateFocus(index-1);
+      else if(ev.key==="ArrowDown") updateFocus(index+5);
+      else if(ev.key==="ArrowUp") updateFocus(index-5);
+      else if(ev.key==="Enter") launchApp(tiles[index]);
+    });
+
+    // mouse
+    tiles.forEach((tile,i)=>{
+      tile.addEventListener("click",()=>{ updateFocus(i); launchApp(tile); });
+    });
+
+    (async()=>{ try{ await initClient(); }catch(e){ log("Init failed: "+e); } })();
   </script>
 </body>
 </html>

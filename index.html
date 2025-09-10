@@ -1,176 +1,68 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <title>SSAP TV Launcher</title>
-  <style>
-    body { 
-      background:#0b0b0b; 
-      margin:0; 
-      font-family:sans-serif; 
-      color:#fff; 
-      text-align:center;
-      overflow-y: auto; 
-      height: 100vh;
-    }
-    h2 { margin:20px 0; }
-    .grid { 
-      display:grid; 
-      grid-template-columns:repeat(5,1fr); 
-      gap:20px; 
-      padding:40px; 
-    }
-    .tile {
-      background:#1a1a1a; 
-      border:3px solid transparent; 
-      border-radius:12px;
-      text-align:center; 
-      padding:12px; 
-      transition:border-color 0.2s, background 0.2s;
-      cursor:pointer;
-    }
-    .tile img { 
-      width:96px; 
-      height:96px; 
-      object-fit:contain; 
-      margin-bottom:10px; 
-    }
-    .tile span { 
-      display:block; 
-      font-size:14px; 
-      color:#ddd; 
-    }
-    .tile.active { 
-      border-color:#4af; 
-      background:#222; 
-    }
-    #log { 
-      white-space:pre; 
-      text-align:left; 
-      background:#111; 
-      padding:10px; 
-      margin:20px auto; 
-      max-width:900px; 
-      border-radius:8px; 
-      font-size:13px; 
-    }
-  </style>
-</head>
-<body>
-  <h2>📺 LG webOS SSAP Launcher</h2>
+<!doctype html><html><head><meta charset="utf-8"/><title>SSAP TV Launcher</title>
+<style>body{background:#0b0b0b;margin:0;font-family:sans-serif;color:#fff;text-align:center;overflow-y:auto;height:100vh}h2{margin:20px 0}.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;padding:40px}.tile{background:#1a1a1a;border:3px solid transparent;border-radius:12px;text-align:center;padding:12px;transition:.2s;cursor:pointer}.tile img{width:96px;height:96px;object-fit:contain;margin-bottom:10px}.tile span{display:block;font-size:14px;color:#ddd}.tile.active{border-color:#4af;background:#222}#log{white-space:pre;text-align:left;background:#111;padding:10px;margin:20px auto;max-width:900px;border-radius:8px;font-size:13px}</style>
+</head><body>
+<h2>📺 LG webOS Launcher + Volume</h2>
+<div class="grid" id="grid">
+<div class="tile active" data-id="com.webos.app.photovideo" data-title="Photo & Video" data-thumb="https://img.icons8.com/fluency/96/video.png"></div>
+<div class="tile" data-id="com.webos.app.mediadiscovery" data-title="MediaDiscovery" data-thumb="https://img.icons8.com/fluency/96/photo-video.png"></div>
+<div class="tile" data-id="com.webos.app.smartshare" data-title="SmartShare" data-thumb="https://img.icons8.com/fluency/96/gallery.png"></div>
+<div class="tile" data-id="com.webos.app.browser" data-title="Web Browser" data-thumb="https://img.icons8.com/fluency/96/internet.png"></div>
+<div class="tile" data-id="youtube.leanback.v4" data-title="YouTube Leanback" data-thumb="https://img.icons8.com/fluency/96/youtube-play.png"></div>
+<div class="tile" data-id="com.webos.app.inputcommon" data-title="Input Common" data-thumb="https://img.icons8.com/fluency/96/input.png"></div>
+<div class="tile" data-id="com.webos.app.hdmi1" data-title="HDMI1" data-thumb="https://img.icons8.com/fluency/96/hdmi.png"></div>
+<div class="tile" data-id="com.webos.app.hdmi2" data-title="HDMI2" data-thumb="https://img.icons8.com/fluency/96/hdmi.png"></div>
+<div class="tile" data-id="com.webos.app.hdmi3" data-title="HDMI3" data-thumb="https://img.icons8.com/fluency/96/hdmi.png"></div>
+<div class="tile" data-id="com.webos.app.hdmi4" data-title="HDMI4" data-thumb="https://img.icons8.com/fluency/96/hdmi.png"></div>
+<div class="tile" data-id="com.webos.app.externalinput.av1" data-title="AV1" data-thumb="https://img.icons8.com/fluency/96/av.png"></div>
+<div class="tile" data-id="com.webos.app.externalinput.av2" data-title="AV2" data-thumb="https://img.icons8.com/fluency/96/av.png"></div>
+<div class="tile" data-id="com.webos.app.externalinput.scart" data-title="SCART" data-thumb="https://img.icons8.com/fluency/96/scart.png"></div>
+<div class="tile" data-id="com.webos.app.externalinput.component" data-title="Component" data-thumb="https://img.icons8.com/fluency/96/component.png"></div>
+<div class="tile" data-id="com.webos.app.beanbrowser" data-title="BeanBrowser" data-thumb="https://img.icons8.com/fluency/96/browser.png"></div>
+<div class="tile" data-id="menu" data-title="... Menu" data-thumb="https://img.icons8.com/fluency/96/settings.png"></div>
+<div class="tile" data-id="quicksettings" data-title="Quick Settings" data-thumb="https://img.icons8.com/fluency/96/slider.png"></div>
+<div class="tile" data-id="inputpicker" data-title="Input Picker" data-thumb="https://img.icons8.com/fluency/96/keyboard.png"></div>
+<div class="tile" data-id="ad" data-title="AD" data-thumb="https://img.icons8.com/fluency/96/speaker.png"></div>
+<div class="tile" data-id="subtitle" data-title="Subtitle" data-thumb="https://img.icons8.com/fluency/96/subtitles.png"></div>
+<div class="tile" data-id="com.webos.app.screensaver" data-title="Screensaver" data-thumb="https://img.icons8.com/fluency/96/screen.png"></div>
+<div class="tile" data-id="ga_settings" data-title="GA Settings" data-thumb="https://img.icons8.com/fluency/96/google-assistant.png"></div>
+<div class="tile" data-id="ga_miracast" data-title="GA Miracast" data-thumb="https://img.icons8.com/fluency/96/google-assistant.png"></div>
+<div class="tile" data-id="ga_homeconnect" data-title="GA HomeConnect" data-thumb="https://img.icons8.com/fluency/96/google-assistant.png"></div>
+<div class="tile" data-id="ga_cheeringtv" data-title="GA CheeringTV" data-thumb="https://img.icons8.com/fluency/96/google-assistant.png"></div>
+<div class="tile" data-id="ga_custom" data-title="GA Custom URL" data-thumb="https://img.icons8.com/fluency/96/google-assistant.png"></div>
+<div class="tile" data-id="volumeup" data-title="Volume Up" data-thumb="https://img.icons8.com/fluency/96/volume-up.png"></div>
+<div class="tile" data-id="volumedown" data-title="Volume Down" data-thumb="https://img.icons8.com/fluency/96/volume-down.png"></div>
+<div class="tile" data-id="volumemute" data-title="Mute/Unmute" data-thumb="https://img.icons8.com/fluency/96/mute.png"></div>
+<div class="tile" data-id="setvolume" data-title="Set Volume 30%" data-thumb="https://img.icons8.com/fluency/96/sliders.png"></div>
+</div>
+<div id="log"></div>
 
-  <div class="grid" id="grid">
-    <div class="tile active" data-id="com.webos.app.photovideo" data-title="Photo & Video" data-thumb="https://img.icons8.com/fluency/96/video.png"></div>
-    <div class="tile" data-id="com.webos.app.browser" data-title="Web Browser" data-thumb="https://img.icons8.com/fluency/96/internet.png"></div>
-    <div class="tile" data-id="youtube.leanback.v4" data-title="YouTube Leanback" data-thumb="https://img.icons8.com/fluency/96/youtube-play.png"></div>
-    <div class="tile" data-id="com.webos.app.installation" data-title="Secret Menu" data-thumb="https://img.icons8.com/fluency/96/settings.png"></div>
-    <div class="tile" data-id="com.webos.app.music" data-title="Music" data-thumb="https://img.icons8.com/fluency/96/musical-notes.png"></div>
-    <div class="tile" data-id="com.palm.app.settings" data-title="Settings" data-thumb="https://img.icons8.com/fluency/96/settings--v1.png"></div>
-    <div class="tile" data-id="com.webos.app.cheeringtv" data-title="Cheering TV" data-thumb="https://img.icons8.com/fluency/96/speaker.png"></div>
-    <div class="tile" data-id="com.webos.app.discovery" data-title="LG Content Store" data-thumb="https://img.icons8.com/fluency/96/shopping-bag.png"></div>
-    <div class="tile" data-id="com.webos.app.home" data-title="Home" data-thumb="https://img.icons8.com/fluency/96/home.png"></div>
-    <div class="tile" data-id="com.webos.app.fullhome" data-title="New Home" data-thumb="https://img.icons8.com/fluency/96/home-page.png"></div>
-  </div>
+<script src="https://raw.githubusercontent.com/webosappclub/webosappclub.github.io/refs/heads/main/msx/instart/webOSTV.js"></script>
+<script src="https://raw.githubusercontent.com/webosappclub/webosappclub.github.io/refs/heads/main/msx/instart/webOSTV-dev.js"></script>
+<script src="https://dropbox.inf.re/webos-gfn/wsproxy.js"></script>
+<script src="https://dropbox.inf.re/webos-gfn/client.js"></script>
 
-  <div id="log"></div>
+<script>
+const LOG=document.getElementById('log'),tiles=[...document.querySelectorAll('.tile')];let index=0,client;let useLegacyRequest=false;
+const ua=navigator.userAgent,match=ua.match(/Chrome\/(\d+)/),chromeVersion=match?parseInt(match[1],10):0;useLegacyRequest=chromeVersion<=53;LOG.textContent="[INFO] Chrome ver:"+chromeVersion+" using "+(useLegacyRequest?"legacy":"SSAPClient")+"\n"+LOG.textContent;
 
-  <!-- Additional required scripts -->
-  <script src="https://raw.githubusercontent.com/webosappclub/webosappclub.github.io/refs/heads/main/msx/instart/webOSTV.js"></script>
-  <script src="https://raw.githubusercontent.com/webosappclub/webosappclub.github.io/refs/heads/main/msx/instart/webOSTV-dev.js"></script>
-  <script src="https://dropbox.inf.re/webos-gfn/wsproxy.js"></script>
-  <script src="https://dropbox.inf.re/webos-gfn/client.js"></script>
+tiles.forEach((tile,i)=>{tile.innerHTML=`<img src="${tile.dataset.thumb}"><span>${tile.dataset.title}</span>`;tile.onclick=()=>{updateFocus(i);launchApp(tile);}});
 
-  <script>
-    const LOG = document.getElementById('log');
-    const tiles = [...document.querySelectorAll('.tile')];
-    let index = 0;
-    let client;
-    let useLegacyRequest = false;
+async function initClient(){if(client||useLegacyRequest)return client;client=new SSAPClient("127.0.0.1",window.localStorage["client-key-127.0.0.1"]);LOG.textContent="[INFO] Connecting...\n"+LOG.textContent;await client.connect();LOG.textContent="[INFO] Registering...\n"+LOG.textContent;window.localStorage["client-key-127.0.0.1"]=await client.register();LOG.textContent="[INFO] Registered\n"+LOG.textContent;return client;}
 
-    function log(m){
-      LOG.textContent = `[${new Date().toLocaleTimeString()}] ${m}\n` + LOG.textContent;
-    }
+async function launchApp(tile){const id=tile.dataset.id;if(useLegacyRequest){try{id.startsWith("volume")||id==="setvolume"?legacyVolume(id):legacyLaunch(id)}catch(e){LOG.textContent="[ERR] "+e+"\n"+LOG.textContent}}else{try{id.startsWith("volume")||id==="setvolume"?await ssapVolume(id):await ssapLaunch(id)}catch(e){LOG.textContent="[ERR] "+e+"\n"+LOG.textContent}}}
 
-    // detect Chrome version
-    const ua = navigator.userAgent;
-    const match = ua.match(/Chrome\/(\d+)/);
-    const chromeVersion = match ? parseInt(match[1], 10) : 0;
-    useLegacyRequest = chromeVersion <= 53; // <=53 use legacy
+function legacyLaunch(id){const s=webOS.service.request;if(id==="menu"){s("luna://com.webos.service.systemUIManager",{method:"launch",parameters:{appId:"com.webos.app.screenremote"},onSuccess:m=>LOG.textContent="[OK] Menu\n"+LOG.textContent,onFailure:e=>LOG.textContent="[ERR] "+JSON.stringify(e)+"\n"+LOG.textContent})}else if(id==="quicksettings"){s("luna://com.webos.service.systemUIManager",{method:"launch",parameters:{appId:"com.webos.app.quicksettings"},onSuccess:m=>LOG.textContent="[OK] QuickSettings\n"+LOG.textContent})}else if(id==="inputpicker"){s("luna://com.webos.service.systemUIManager",{method:"launch",parameters:{appId:"com.webos.app.quickinputpicker"},onSuccess:m=>LOG.textContent="[OK] InputPicker\n"+LOG.textContent})}else if(id==="ad"){s("luna://com.webos.service.applicationManager",{method:"launch",parameters:{id:"com.webos.app.tvhotkey",params:{activateType:"audio-description"}}})}else if(id==="subtitle"){s("luna://com.webos.service.applicationManager",{method:"launch",parameters:{id:"com.webos.app.tvhotkey",params:{activateType:"subtitle"}}})}else if(id==="beanbrowser"){s("luna://com.webos.service.applicationManager",{method:"launch",parameters:{id:"com.webos.app.beanbrowser",params:{contentTarget:"http://www.google.com",ui:["Exit"],x:0,y:100,width:1280,height:720,overlay:true}}})}else if(id.startsWith("ga_")){let target="";switch(id){case"ga_settings":target="file:///usr/palm/applications/com.palm.app.settings/index.en.html";break;case"ga_miracast":target="file:///usr/palm/applications/com.webos.app.miracast/index.multi.html";break;case"ga_homeconnect":target="file:///usr/palm/applications/com.webos.app.homeconnect/index.hu-HU.html";break;case"ga_cheeringtv":target="file:///usr/palm/applications/com.webos.app.cheeringtv/index.html";break;case"ga_custom":target="https://itsrealm12c.github.io/owalnew/testing"}s("luna://com.webos.service.applicationManager",{method:"launch",parameters:{id:"com.webos.app.googleassistant",params:{target}}})}else{s("luna://com.webos.service.applicationManager",{method:"launch",parameters:{id:id}})}}
 
-    log("Detected Chrome version: " + chromeVersion + " -> using " + (useLegacyRequest?"legacy request":"SSAPClient"));
+function legacyVolume(id){const s=webOS.service.request;if(id==="volumeup")s("luna://com.webos.service.audio",{method:"volumeUp"});else if(id==="volumedown")s("luna://com.webos.service.audio",{method:"volumeDown"});else if(id==="volumemute")s("luna://com.webos.service.audio",{method:"setMute",parameters:{mute:true}});else if(id==="setvolume")s("luna://com.webos.service.audio",{method:"setVolume",parameters:{volume:30}})}
 
-    // decorate each tile with icon + title and onclick
-    tiles.forEach((tile, i)=>{
-      tile.innerHTML = `<img src="${tile.dataset.thumb}"><span>${tile.dataset.title}</span>`;
-      tile.onclick = () => { updateFocus(i); launchApp(tile); };
-    });
+async function ssapLaunch(id){const cli=await initClient();if(id==="menu")await cli.request({uri:"ssap://system.launcher/launch",payload:{id:"com.webos.app.screenremote"}});else if(id==="quicksettings")await cli.request({uri:"ssap://system.launcher/launch",payload:{id:"com.webos.app.quicksettings"}});else if(id==="inputpicker")await cli.request({uri:"ssap://system.launcher/launch",payload:{id:"com.webos.app.quickinputpicker"}});else if(id==="ad")await cli.request({uri:"ssap://system.launcher/launch",payload:{id:"com.webos.app.tvhotkey",params:{activateType:"audio-description"}}});else if(id==="subtitle")await cli.request({uri:"ssap://system.launcher/launch",payload:{id:"com.webos.app.tvhotkey",params:{activateType:"subtitle"}}});else if(id==="beanbrowser")await cli.request({uri:"ssap://system.launcher/launch",payload:{id:"com.webos.app.beanbrowser",params:{contentTarget:"http://www.google.com",ui:["Exit"],x:0,y:100,width:1280,height:720,overlay:true}}});else if(id.startsWith("ga_")){let target="";switch(id){case"ga_settings":target="file:///usr/palm/applications/com.palm.app.settings/index.en.html";break;case"ga_miracast":target="file:///usr/palm/applications/com.webos.app.miracast/index.multi.html";break;case"ga_homeconnect":target="file:///usr/palm/applications/com.webos.app.homeconnect/index.hu-HU.html";break;case"ga_cheeringtv":target="file:///usr/palm/applications/com.webos.app.cheeringtv/index.html";break;case"ga_custom":target="https://itsrealm12c.github.io/owalnew/testing"}await cli.request({uri:"ssap://system.launcher/launch",payload:{id:"com.webos.app.googleassistant",params:{target}}})}else await cli.request({uri:"ssap://system.launcher/launch",payload:{id:id}})}
 
-    async function initClient(){
-      if(client) return client;
-      if(useLegacyRequest) return null; // no client needed for legacy
-      const target = "127.0.0.1";
-      client = new SSAPClient(target, window.localStorage["client-key-"+target]);
-      log("Connecting...");
-      await client.connect();
-      log("Registering...");
-      window.localStorage["client-key-"+target] = await client.register();
-      log("Registered.");
-      return client;
-    }
+async function ssapVolume(id){const cli=await initClient();if(id==="volumeup")await cli.request({uri:"ssap://audio/volumeUp",payload:{}});else if(id==="volumedown")await cli.request({uri:"ssap://audio/volumeDown",payload:{}});else if(id==="volumemute")await cli.request({uri:"ssap://audio/setMute",payload:{mute:true}});else if(id==="setvolume")await cli.request({uri:"ssap://audio/setVolume",payload:{volume:30}})}
 
-    async function launchApp(tile){
-      if(useLegacyRequest){
-        // legacy var request
-        try{
-          log("Launching (legacy) " + tile.dataset.id);
-          var request = webOS.service.request("luna://com.webos.service.applicationManager", {
-            method: "launch",
-            parameters: { id: tile.dataset.id },
-            onSuccess: function(msg){ log("Launch success: "+JSON.stringify(msg)); },
-            onFailure: function(err){ log("Launch failed: "+JSON.stringify(err)); }
-          });
-        }catch(e){
-          log("Legacy launch error: "+e);
-        }
-      } else {
-        // modern SSAPClient
-        try{
-          const cli = await initClient();
-          log("Launching " + tile.dataset.id);
-          await cli.request({
-            uri: "ssap://system.launcher/launch",
-            payload: { id: tile.dataset.id }
-          });
-          log("Launch sent: " + tile.dataset.id);
-        }catch(e){
-          console.error(e);
-          log("Launch failed: " + e);
-        }
-      }
-    }
+function updateFocus(n){tiles[index].classList.remove("active");index=(n+tiles.length)%tiles.length;tiles[index].classList.add("active");tiles[index].scrollIntoView({behavior:"smooth",block:"center"})}
 
-    function updateFocus(newIndex){
-      tiles[index].classList.remove("active");
-      index = (newIndex + tiles.length) % tiles.length;
-      tiles[index].classList.add("active");
-      tiles[index].scrollIntoView({behavior:"smooth", block:"center"});
-    }
+window.addEventListener("keydown",e=>{if(e.key==="ArrowRight")updateFocus(index+1);else if(e.key==="ArrowLeft")updateFocus(index-1);else if(e.key==="ArrowDown")updateFocus(index+5);else if(e.key==="ArrowUp")updateFocus(index-5);else if(e.key==="Enter")launchApp(tiles[index])})
 
-    // keyboard nav
-    window.addEventListener("keydown",ev=>{
-      if(ev.key==="ArrowRight") updateFocus(index+1);
-      else if(ev.key==="ArrowLeft") updateFocus(index-1);
-      else if(ev.key==="ArrowDown") updateFocus(index+5);
-      else if(ev.key==="ArrowUp") updateFocus(index-5);
-      else if(ev.key==="Enter") launchApp(tiles[index]);
-    });
-
-    (async()=>{
-      if(!useLegacyRequest){
-        try{ await initClient(); }
-        catch(e){ log("Init failed: "+e); }
-      }
-    })();
-  </script>
-</body>
-</html>
+(async()=>{if(!useLegacyRequest)try{await initClient()}catch(e){LOG.textContent="[ERR] Init failed "+e+"\n"+LOG.textContent}})();
+</script>
+</body></html>

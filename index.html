@@ -2,41 +2,36 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>TV Style UI</title>
+  <title>TV UI</title>
   <style>
-    body { background:#0b0b0b; margin:0; font-family:sans-serif; color:#fff; }
-    .grid {
-      display:grid;
-      grid-template-columns:repeat(5,1fr);
-      gap:20px;
-      padding:40px;
-    }
+    body { background:#0b0b0b; margin:0; font-family:sans-serif; color:#fff; text-align:center; }
+    h2 { margin:20px 0; }
+    .grid { display:grid; grid-template-columns:repeat(5,1fr); gap:20px; padding:40px; }
     .tile {
-      background:#1a1a1a;
-      border:3px solid transparent;
-      border-radius:12px;
-      text-align:center;
-      padding:12px;
-      transition:all 0.2s;
+      background:#1a1a1a; border:3px solid transparent; border-radius:12px;
+      text-align:center; padding:12px; transition:border-color 0.2s, background 0.2s;
     }
-    .tile img {
-      width:100px;
-      height:100px;
-      object-fit:contain;
-      margin-bottom:10px;
+    .tile img { width:100px; height:100px; object-fit:contain; margin-bottom:10px; }
+    .tile span { display:block; font-size:14px; color:#ddd; }
+    .tile.active { border-color:#4af; background:#222; }
+    .yt-button {
+      display:inline-block;
+      margin:20px auto;
+      padding:14px 28px;
+      font-size:18px;
+      background:#c4302b;
+      color:#fff;
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
+      box-shadow:0 4px 8px rgba(0,0,0,0.6);
     }
-    .tile span {
-      display:block;
-      font-size:14px;
-      color:#ddd;
-    }
-    .tile.active {
-      border-color:#4af;
-      background:#222;
-    }
+    .yt-button:hover { background:#e9453f; }
   </style>
 </head>
 <body>
+  <h2>📺 TV App Launcher</h2>
+
   <div class="grid" id="grid">
     <div class="tile active" data-id="com.webos.app.photovideo">
       <img src="https://img.icons8.com/fluency/96/video.png" alt="">
@@ -46,90 +41,81 @@
       <img src="https://img.icons8.com/fluency/96/internet.png" alt="">
       <span>Web Browser</span>
     </div>
-    <div class="tile" data-id="com.webos.app.cheeringtv">
-      <img src="https://img.icons8.com/fluency/96/party.png" alt="">
-      <span>Cheering TV</span>
-    </div>
-    <div class="tile" data-id="com.palm.app.settings">
-      <img src="https://img.icons8.com/fluency/96/settings.png" alt="">
-      <span>Settings</span>
-    </div>
-    <div class="tile" data-id="com.webos.app.installation">
-      <img src="https://img.icons8.com/fluency/96/lock.png" alt="">
-      <span>Secret Menu</span>
-    </div>
-    <div class="tile" data-id="com.webos.app.premium">
-      <img src="https://img.icons8.com/fluency/96/shop.png" alt="">
-      <span>Premium Store</span>
-    </div>
-    <div class="tile" data-id="com.webos.app.home">
-      <img src="https://img.icons8.com/fluency/96/home.png" alt="">
-      <span>Home</span>
-    </div>
-    <div class="tile" data-id="com.webos.app.fullhome">
-      <img src="https://img.icons8.com/fluency/96/dashboard.png" alt="">
-      <span>New Home</span>
-    </div>
     <div class="tile" data-id="com.webos.app.music">
       <img src="https://img.icons8.com/fluency/96/musical-notes.png" alt="">
-      <span>Music App</span>
-    </div>
-    <div class="tile" data-id="com.webos.app.discovery">
-      <img src="https://img.icons8.com/fluency/96/tv.png" alt="">
-      <span>Content Store</span>
+      <span>Music</span>
     </div>
   </div>
 
-  <!-- The missing webOS library -->
-  <script src="file:///usr/palm/frameworks/enyo/1.0/framework/webos.js"></script>
+  <!-- Extra button for YouTube -->
+  <button class="yt-button" onclick="launchYouTube()">▶ Launch YouTube Leanback</button>
+
+  <!-- Correct runtime scripts for webOS -->
+  <script src="file:///usr/palm/frameworks/enyo/2.0/enyo.js"></script>
+  <script src="file:///usr/palm/frameworks/enyo/2.0/lib/webos/webos.js"></script>
 
   <script>
     const tiles = [...document.querySelectorAll('.tile')];
     let index = 0;
 
-    function updateFocus() {
-      tiles.forEach((t,i)=>t.classList.toggle('active', i===index));
+    function updateFocus(newIndex) {
+      if (newIndex === index) return;
+      tiles[index].classList.remove('active');
+      index = (newIndex + tiles.length) % tiles.length;
+      tiles[index].classList.add('active');
     }
 
     function runAction(tile) {
       const appId = tile.dataset.id;
       if (!appId) return;
 
-      // Special case: photovideo with payload
       if (appId === "com.webos.app.photovideo") {
-        var request = webOS.service.request("luna://com.webos.applicationManager", {
+        webOS.service.request("luna://com.webos.applicationManager", {
           method: "launch",
           parameters: {
             id: "com.webos.app.photovideo",
-            params: {
-              payload: [{
-                fullPath: "https://media.w3.org/2010/05/sintel/trailer.mp4",
-                mediaType: "VIDEO",
-                fileName: "trailer",
-                lastPlayPosition: -1
-              }]
-            }
+            params: { payload:[{ fullPath:"https://media.w3.org/2010/05/sintel/trailer.mp4", mediaType:"VIDEO", fileName:"trailer" }] }
           },
-          onSuccess: function(){ console.log("Launched PhotoVideo"); },
-          onFailure: function(e){ console.log("Error", e); }
+          onSuccess: ()=>console.log("Launched PhotoVideo"),
+          onFailure: (e)=>console.log("Error", e)
         });
       } else {
-        var request = webOS.service.request("luna://com.webos.applicationManager", {
+        webOS.service.request("luna://com.webos.applicationManager", {
           method: "launch",
           parameters: { id: appId },
-          onSuccess: function(){ console.log("Launched", appId); },
-          onFailure: function(e){ console.log("Error", e); }
+          onSuccess: ()=>console.log("Launched", appId),
+          onFailure: (e)=>console.log("Error", e)
         });
       }
     }
 
+    // Keyboard navigation
     window.addEventListener('keydown', (ev)=>{
-      if(ev.key === "ArrowRight") { index = (index+1)%tiles.length; updateFocus(); }
-      else if(ev.key === "ArrowLeft") { index = (index-1+tiles.length)%tiles.length; updateFocus(); }
-      else if(ev.key === "ArrowUp") { index = (index-5+tiles.length)%tiles.length; updateFocus(); }
-      else if(ev.key === "ArrowDown") { index = (index+5)%tiles.length; updateFocus(); }
-      else if(ev.key === "Enter") { runAction(tiles[index]); }
+      if(ev.key === "ArrowRight") updateFocus(index+1);
+      else if(ev.key === "ArrowLeft") updateFocus(index-1);
+      else if(ev.key === "Enter") runAction(tiles[index]);
     });
+
+    // Mouse click
+    tiles.forEach((tile,i)=>{
+      tile.addEventListener('click', ()=>{ updateFocus(i); runAction(tile); });
+    });
+
+    // Extra: Launch YouTube Leanback
+    function launchYouTube() {
+      var request = webOS.service.request("luna://com.webos.applicationManager", {
+        method: "launch",
+        parameters: { id: "youtube.leanback.v4" },
+        onSuccess: function (inResponse) {
+          console.log("YouTube launched");
+          window.close();
+        },
+        onFailure: function (inError) {
+          console.log("Failed to launch YouTube");
+          console.log("[" + inError.errorCode + "]: " + inError.errorText);
+        }
+      });
+    }
   </script>
 </body>
 </html>
